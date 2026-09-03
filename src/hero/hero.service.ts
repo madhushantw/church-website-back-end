@@ -14,6 +14,7 @@ export class HeroService {
 
   async findOne() {
     const hero = await this.heroRepository.findOne({
+      where: {},
       order: { createdAt: 'ASC' },
     });
 
@@ -26,6 +27,7 @@ export class HeroService {
 
   async update(data: UpdateHeroDto) {
     let hero = await this.heroRepository.findOne({
+      where: {},
       order: { createdAt: 'ASC' },
     });
 

@@ -13,7 +13,8 @@ export class ChurchInfoService {
   ) {}
 
   async findOne() {
-    let churchInfo = await this.churchInfoRepository.findOne({
+    const churchInfo = await this.churchInfoRepository.findOne({
+      where: {},
       order: { createdAt: 'ASC' },
     });
 
@@ -26,6 +27,7 @@ export class ChurchInfoService {
 
   async update(data: UpdateChurchInfoDto) {
     let churchInfo = await this.churchInfoRepository.findOne({
+      where: {},
       order: { createdAt: 'ASC' },
     });
 

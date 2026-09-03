@@ -49,4 +49,33 @@ export class AuthService {
       },
     };
   }
+
+  async loginWithAccessToken(accessToken: string) {
+    try {
+      const payload = await this.jwtService.verifyAsync<{
+        sub: string;
+      }>(accessToken);
+      const user = await this.userRepository.findOne({
+        where: {
+          id: payload.sub,
+        },
+      });
+
+      if (!user) {
+        throw new UnauthorizedException('Invalid access token');
+      }
+
+      return {
+        accessToken,
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+        },
+      };
+    } catch {
+      throw new UnauthorizedException('Invalid access token');
+    }
+  }
 }

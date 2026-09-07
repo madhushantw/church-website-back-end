@@ -5,6 +5,7 @@ import { AppModule } from './app.module';
 import { UsersSeed } from './users/users.seed';
 import { ChurchInfoSeed } from './church-info/church-info.seed';
 import { HeroSeed } from './hero/hero.seed';
+import { TransformInterceptor } from './utils/transform.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -13,6 +14,8 @@ async function bootstrap() {
     origin: 'http://localhost:3000',
     credentials: true,
   });
+
+  app.useGlobalInterceptors(new TransformInterceptor());
 
   const usersSeed = app.get(UsersSeed);
   await usersSeed.run();

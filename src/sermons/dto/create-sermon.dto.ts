@@ -1,10 +1,23 @@
 import {
+  IsArray,
   IsDateString,
+  IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
-  IsUrl,
+  ValidateNested,
 } from 'class-validator';
+import { Type } from 'class-transformer';
+import { SermonPdfType } from '../entities/sermon.entity';
+
+export class SermonPdfFileDto {
+  @IsEnum(SermonPdfType)
+  type!: SermonPdfType;
+
+  @IsString()
+  @IsNotEmpty()
+  url!: string;
+}
 
 export class CreateSermonDto {
   @IsString()
@@ -16,25 +29,15 @@ export class CreateSermonDto {
   description?: string;
 
   @IsString()
-  @IsOptional()
-  image?: string;
-
-  @IsString()
   @IsNotEmpty()
   preacher!: string;
 
   @IsDateString()
   sermonDate!: string;
 
-  @IsUrl()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => SermonPdfFileDto)
   @IsOptional()
-  videoUrl?: string;
-
-  @IsUrl()
-  @IsOptional()
-  audioUrl?: string;
-
-  @IsString()
-  @IsOptional()
-  bibleReference?: string;
+  pdfFiles?: SermonPdfFileDto[];
 }

@@ -6,6 +6,17 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
+export enum SermonPdfType {
+  PEWSHEET = 'Pewsheet',
+  READINGS = 'Readings',
+  SERMON = 'sermon',
+}
+
+export interface SermonPdfFile {
+  type: SermonPdfType;
+  url: string;
+}
+
 @Entity('sermons')
 export class Sermon {
   @PrimaryGeneratedColumn('uuid')
@@ -17,23 +28,14 @@ export class Sermon {
   @Column({ type: 'text', nullable: true })
   description!: string | null;
 
-  @Column({ type: 'text', nullable: true })
-  image!: string | null;
-
   @Column()
   preacher!: string;
 
   @Column({ type: 'timestamptz' })
   sermonDate!: Date;
 
-  @Column({ type: 'text', nullable: true })
-  videoUrl!: string | null;
-
-  @Column({ type: 'text', nullable: true })
-  audioUrl!: string | null;
-
-  @Column({ type: 'text', nullable: true })
-  bibleReference!: string | null;
+  @Column({ type: 'jsonb', default: () => "'[]'" })
+  pdfFiles!: SermonPdfFile[];
 
   @CreateDateColumn()
   createdAt!: Date;

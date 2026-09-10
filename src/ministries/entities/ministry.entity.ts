@@ -6,6 +6,18 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
+export enum MinistryType {
+  GENERAL = 'general',
+  CHILDREN = 'children',
+  YOUTH = 'youth',
+  WOMEN = 'women',
+  MEN = 'men',
+  WORSHIP = 'worship',
+  OUTREACH = 'outreach',
+  PRAYER = 'prayer',
+  MEDIA = 'media',
+}
+
 @Entity('ministries')
 export class Ministry {
   @PrimaryGeneratedColumn('uuid')
@@ -13,6 +25,13 @@ export class Ministry {
 
   @Column()
   name!: string;
+
+  @Column({
+    type: 'enum',
+    enum: MinistryType,
+    default: MinistryType.GENERAL,
+  })
+  type!: MinistryType;
 
   @Column({ type: 'text', nullable: true })
   description!: string | null;

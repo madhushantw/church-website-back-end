@@ -1,7 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Sermon } from './entities/sermon.entity';
+import { unlink } from 'node:fs/promises';
+import { basename, join } from 'node:path';
+import { Sermon, SermonPdfFile } from './entities/sermon.entity';
 import { CreateSermonDto } from './dto/create-sermon.dto';
 import { UpdateSermonDto } from './dto/update-sermon.dto';
 
@@ -42,8 +44,51 @@ export class SermonsService {
     return this.sermonRepository.save(sermon);
   }
 
+  async addPdf(id: string, pdfFile: SermonPdfFile) {
+    const sermon = await this.findOne(id);
+    const existingPdf = sermon.pdfFiles.find(
+      (existingFile) => existingFile.type === pdfFile.type,
+    );
+
+    sermon.pdfFiles = existingPdf
+      ? sermon.pdfFiles.map((existingFile) =>
+          existingFile.type === pdfFile.type ? pdfFile : existingFile,
+        )
+      : [...sermon.pdfFiles, pdfFile];
+
+    const savedSermon = await this.sermonRepository.save(sermon);
+
+    if (existingPdf && existingPdf.url !== pdfFile.url) {
+      await this.removeLocalPdf(existingPdf.url);
+    }
+
+    return savedSermon;
+  }
+
+  private async removeLocalPdf(url: string) {
+    const pathname = new URL(url, 'http://localhost').pathname;
+
+    if (!pathname.startsWith('/uploads/sermons/')) {
+      return;
+    }
+
+    try {
+      await unlink(
+        join(process.cwd(), 'uploads', 'sermons', basename(pathname)),
+      );
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
+        throw error;
+      }
+    }
+  }
+
   async remove(id: string) {
     const sermon = await this.findOne(id);
+
+    await Promise.all(
+      sermon.pdfFiles.map((pdfFile) => this.removeLocalPdf(pdfFile.url)),
+    );
 
     await this.sermonRepository.remove(sermon);
 

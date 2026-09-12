@@ -28,6 +28,9 @@ export class Sermon {
   @Column({ type: 'text', nullable: true })
   description!: string | null;
 
+  @Column({ type: 'text', nullable: true })
+  reflection!: string | null;
+
   @Column()
   preacher!: string;
 

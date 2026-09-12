@@ -34,6 +34,11 @@ export class SermonsController {
     return this.sermonsService.findAll();
   }
 
+  @Get('gospel')
+  findLast() {
+    return this.sermonsService.findGospel();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.sermonsService.findOne(id);

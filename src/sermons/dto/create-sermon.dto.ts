@@ -29,6 +29,10 @@ export class CreateSermonDto {
   description?: string;
 
   @IsString()
+  @IsOptional()
+  reflection?: string;
+
+  @IsString()
   @IsNotEmpty()
   preacher!: string;
 

@@ -36,6 +36,23 @@ export class SermonsService {
     return sermon;
   }
 
+  async findGospel() {
+    const sermons = await this.sermonRepository.find({
+      take: 1,
+      order: {
+        sermonDate: 'DESC',
+      },
+    });
+
+    const sermon = sermons[0];
+
+    if (!sermon) {
+      throw new NotFoundException('No sermon found');
+    }
+
+    return sermon;
+  }
+
   async update(id: string, data: UpdateSermonDto) {
     const sermon = await this.findOne(id);
 

@@ -1,4 +1,6 @@
-import { IsNotEmpty, IsOptional, IsString, IsUrl } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+
+import { GalleryImageType } from '../entities/gallery.entity';
 
 export class CreateGalleryDto {
   @IsString()
@@ -9,8 +11,6 @@ export class CreateGalleryDto {
   @IsOptional()
   description?: string;
 
-  @IsString()
-  @IsNotEmpty()
-  @IsUrl()
-  image!: string;
+  @IsEnum(GalleryImageType)
+  type!: GalleryImageType;
 }

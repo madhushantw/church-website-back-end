@@ -7,7 +7,6 @@ import {
   Param,
   Patch,
   Post,
-  Req,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -21,7 +20,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { mkdirSync } from 'node:fs';
 import { extname } from 'node:path';
-import type { Request } from 'express';
 
 const sermonUploadDirectory = './uploads/sermons';
 mkdirSync(sermonUploadDirectory, { recursive: true });
@@ -86,7 +84,6 @@ export class SermonsController {
     @Param('id') id: string,
     @UploadedFile() file: Express.Multer.File,
     @Body('type') type: SermonPdfType,
-    @Req() request: Request,
   ) {
     if (!file) {
       throw new BadRequestException('PDF file is required');
@@ -94,7 +91,7 @@ export class SermonsController {
 
     return this.sermonsService.addPdf(id, {
       type,
-      url: `${request.protocol}://${request.get('host')}/uploads/sermons/${file.filename}`,
+      url: `/uploads/sermons/${file.filename}`,
     });
   }
 

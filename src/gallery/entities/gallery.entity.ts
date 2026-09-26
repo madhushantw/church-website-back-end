@@ -6,6 +6,12 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
+export enum GalleryImageType {
+  WORSHIP = 'worship',
+  COMMUNITY = 'community',
+  EVENTS = 'event',
+}
+
 @Entity('gallery')
 export class Gallery {
   @PrimaryGeneratedColumn('uuid')
@@ -17,8 +23,15 @@ export class Gallery {
   @Column({ type: 'text', nullable: true })
   description!: string | null;
 
-  @Column({ type: 'text' })
-  image!: string;
+  @Column({ nullable: true })
+  imageUrl!: string;
+
+  @Column({
+    type: 'enum',
+    enum: GalleryImageType,
+    nullable: true,
+  })
+  imageType!: GalleryImageType;
 
   @CreateDateColumn()
   createdAt!: Date;

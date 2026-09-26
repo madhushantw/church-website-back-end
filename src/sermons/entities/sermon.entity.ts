@@ -34,8 +34,8 @@ export class Sermon {
   @Column()
   preacher!: string;
 
-  @Column({ type: 'timestamptz' })
-  sermonDate!: Date;
+  @Column({ type: 'varchar' })
+  sermonDate!: string;
 
   @Column({ type: 'jsonb', default: () => "'[]'" })
   pdfFiles!: SermonPdfFile[];

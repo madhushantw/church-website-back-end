@@ -77,9 +77,9 @@ export class GalleryController {
     return this.galleryService.create(data, imageUrl);
   }
 
-  @Delete(':id')
+  @Delete()
   @UseGuards(JwtAuthGuard)
-  remove(@Param('id') id: string) {
-    return this.galleryService.remove(id);
+  remove(@Body('ids') ids: string[]) {
+    return this.galleryService.remove(ids);
   }
 }

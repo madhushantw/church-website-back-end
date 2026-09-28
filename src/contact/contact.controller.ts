@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Query,
   UseGuards,
@@ -30,6 +31,13 @@ export class ContactController {
   @Get()
   findAll(@Query() pagination: PaginationDto) {
     return this.contactService.findAll(pagination);
+  }
+
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ROOT)
+  @Patch(':id/read')
+  markAsRead(@Param('id') id: string) {
+    return this.contactService.markAsRead(id);
   }
 
   @Delete(':id')

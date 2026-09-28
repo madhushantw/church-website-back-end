@@ -35,6 +35,20 @@ export class ContactService {
       totalPages: Math.ceil(total / limit),
     };
   }
+  async markAsRead(id: string) {
+    const contact = await this.contactRepository.findOne({
+      where: { id },
+    });
+
+    if (!contact) {
+      throw new NotFoundException('Contact not found');
+    }
+
+    contact.isRead = true;
+
+    return this.contactRepository.save(contact);
+  }
+
   async delete(id: string) {
     const contact = await this.contactRepository.findOne({
       where: { id },

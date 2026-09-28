@@ -4,8 +4,9 @@ import { In, Repository } from 'typeorm';
 import { unlink } from 'node:fs/promises';
 import { basename } from 'node:path';
 
-import { Gallery } from './entities/gallery.entity';
+import { Gallery, GalleryImageType } from './entities/gallery.entity';
 import { CreateGalleryDto } from './dto/create-gallery.dto';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable()
 export class GalleryService {
@@ -24,12 +25,23 @@ export class GalleryService {
 
     return this.galleryRepository.save(gallery);
   }
-  async findAll() {
-    return this.galleryRepository.find({
+  async findAll({ page, limit }: PaginationDto, type?: GalleryImageType) {
+    const [items, total] = await this.galleryRepository.findAndCount({
+      where: type ? { imageType: type } : undefined,
       order: {
         createdAt: 'DESC',
       },
+      skip: (page - 1) * limit,
+      take: limit,
     });
+
+    return {
+      items,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   async findOne(id: string) {

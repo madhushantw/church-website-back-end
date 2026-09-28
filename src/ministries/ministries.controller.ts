@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 
@@ -14,14 +15,15 @@ import { CreateMinistryDto } from './dto/create-ministry.dto';
 import { UpdateMinistryDto } from './dto/update-ministry.dto';
 
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Controller('ministries')
 export class MinistriesController {
   constructor(private readonly ministriesService: MinistriesService) {}
 
   @Get()
-  findAll() {
-    return this.ministriesService.findAll();
+  findAll(@Query() pagination: PaginationDto) {
+    return this.ministriesService.findAll(pagination);
   }
 
   @Get(':id')

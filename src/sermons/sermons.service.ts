@@ -6,6 +6,7 @@ import { basename, join } from 'node:path';
 import { Sermon, SermonPdfFile } from './entities/sermon.entity';
 import { CreateSermonDto } from './dto/create-sermon.dto';
 import { UpdateSermonDto } from './dto/update-sermon.dto';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable()
 export class SermonsService {
@@ -20,8 +21,22 @@ export class SermonsService {
     return this.sermonRepository.save(sermon);
   }
 
-  async findAll() {
-    return this.sermonRepository.find();
+  async findAll({ page, limit }: PaginationDto) {
+    const [items, total] = await this.sermonRepository.findAndCount({
+      order: {
+        sermonDate: 'DESC',
+      },
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+
+    return {
+      items,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   async findOne(id: string) {

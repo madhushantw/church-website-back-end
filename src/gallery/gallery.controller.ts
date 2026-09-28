@@ -6,6 +6,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -18,6 +19,8 @@ import { mkdirSync } from 'node:fs';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'node:path';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { GalleryImageType } from './entities/gallery.entity';
 
 const galleryUploadDirectory = './uploads/gallery';
 
@@ -28,8 +31,11 @@ export class GalleryController {
   constructor(private readonly galleryService: GalleryService) {}
 
   @Get()
-  findAll() {
-    return this.galleryService.findAll();
+  findAll(
+    @Query() pagination: PaginationDto,
+    @Query('type') type?: GalleryImageType,
+  ) {
+    return this.galleryService.findAll(pagination, type);
   }
 
   @Get(':id')

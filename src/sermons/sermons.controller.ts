@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -20,6 +21,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { mkdirSync } from 'node:fs';
 import { extname } from 'node:path';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 const sermonUploadDirectory = './uploads/sermons';
 mkdirSync(sermonUploadDirectory, { recursive: true });
@@ -28,8 +30,8 @@ mkdirSync(sermonUploadDirectory, { recursive: true });
 export class SermonsController {
   constructor(private readonly sermonsService: SermonsService) {}
   @Get()
-  findAll() {
-    return this.sermonsService.findAll();
+  findAll(@Query() pagination: PaginationDto) {
+    return this.sermonsService.findAll(pagination);
   }
 
   @Get('gospel')

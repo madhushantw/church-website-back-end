@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { Ministry } from './entities/ministry.entity';
 import { CreateMinistryDto } from './dto/create-ministry.dto';
 import { UpdateMinistryDto } from './dto/update-ministry.dto';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable()
 export class MinistriesService {
@@ -19,12 +20,22 @@ export class MinistriesService {
     return this.ministryRepository.save(ministry);
   }
 
-  findAll() {
-    return this.ministryRepository.find({
+  async findAll({ page, limit }: PaginationDto) {
+    const [items, total] = await this.ministryRepository.findAndCount({
       order: {
         name: 'ASC',
       },
+      skip: (page - 1) * limit,
+      take: limit,
     });
+
+    return {
+      items,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   async findOne(id: string) {

@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { Event } from './entities/event.entity';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable()
 export class EventsService {
@@ -23,12 +24,22 @@ export class EventsService {
     return this.eventRepository.save(event);
   }
 
-  findAll() {
-    return this.eventRepository.find({
+  async findAll({ page, limit }: PaginationDto) {
+    const [items, total] = await this.eventRepository.findAndCount({
       order: {
         startDate: 'ASC',
       },
+      skip: (page - 1) * limit,
+      take: limit,
     });
+
+    return {
+      items,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
   async findOne(id: string) {

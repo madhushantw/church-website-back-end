@@ -9,6 +9,7 @@ import { GalleryModule } from './gallery/gallery.module';
 import { MinistriesModule } from './ministries/ministries.module';
 import { ChurchInfoModule } from './church-info/church-info.module';
 import { HeroModule } from './hero/hero.module';
+import { ContactModule } from './contact/contact.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { HeroModule } from './hero/hero.module';
     MinistriesModule,
     ChurchInfoModule,
     HeroModule,
+    ContactModule,
   ],
 })
 export class AppModule {}

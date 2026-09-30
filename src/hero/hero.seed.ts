@@ -24,7 +24,7 @@ export class HeroSeed {
       title1: 'A place to',
       title2: 'belong',
       subtitle: 'Growing together in faith, hope, and love.',
-      image: 'https://images.unsplash.com/photo-1438032005730-c779502df39b',
+      images: [],
     });
 
     await this.heroRepository.save(hero);

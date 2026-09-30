@@ -37,7 +37,7 @@ export class HeroService {
         title1: data.title1 || '',
         title2: data.title2 || '',
         subtitle: data.subtitle || '',
-        image: data.image || '',
+        images: data.images || [],
       });
     } else {
       Object.assign(hero, data);

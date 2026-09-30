@@ -23,8 +23,12 @@ export class Hero {
   @Column({ type: 'text' })
   subtitle!: string;
 
-  @Column({ type: 'text' })
-  image!: string;
+  @Column({
+    type: 'text',
+    array: true,
+    default: '{}',
+  })
+  images!: string[];
 
   @CreateDateColumn()
   createdAt!: Date;

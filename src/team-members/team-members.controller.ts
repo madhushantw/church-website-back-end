@@ -18,8 +18,11 @@ import { mkdirSync } from 'node:fs';
 import { extname } from 'node:path';
 import { diskStorage } from 'multer';
 
+import { Roles } from '../auth/decorators/roles.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
 import { PaginationDto } from '../common/dto/pagination.dto';
+import { UserRole } from '../users/entities/user.entity';
 import { CreateTeamMemberDto } from './dto/create-team-member.dto';
 import { UpdateTeamMemberDto } from './dto/update-team-member.dto';
 import { TeamMembersService } from './team-members.service';
@@ -43,7 +46,8 @@ export class TeamMembersController {
   }
 
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ROOT)
   @UseInterceptors(
     FileInterceptor('photo', {
       storage: diskStorage({
@@ -79,7 +83,8 @@ export class TeamMembersController {
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ROOT)
   @UseInterceptors(
     FileInterceptor('photo', {
       storage: diskStorage({
@@ -114,7 +119,8 @@ export class TeamMembersController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ROOT)
   remove(@Param('id') id: string) {
     return this.teamMembersService.remove(id);
   }

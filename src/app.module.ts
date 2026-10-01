@@ -10,6 +10,7 @@ import { MinistriesModule } from './ministries/ministries.module';
 import { ChurchInfoModule } from './church-info/church-info.module';
 import { HeroModule } from './hero/hero.module';
 import { ContactModule } from './contact/contact.module';
+import { MissionPartnersModule } from './mission-partners/mission-partners.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { ContactModule } from './contact/contact.module';
     ChurchInfoModule,
     HeroModule,
     ContactModule,
+    MissionPartnersModule,
   ],
 })
 export class AppModule {}

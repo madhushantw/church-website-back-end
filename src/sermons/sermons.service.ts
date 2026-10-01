@@ -8,6 +8,8 @@ import { CreateSermonDto } from './dto/create-sermon.dto';
 import { UpdateSermonDto } from './dto/update-sermon.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 
+const MAX_SERMONS = 800;
+
 @Injectable()
 export class SermonsService {
   constructor(
@@ -17,8 +19,24 @@ export class SermonsService {
 
   async create(data: CreateSermonDto) {
     const sermon = this.sermonRepository.create(data);
+    const savedSermon = await this.sermonRepository.save(sermon);
 
-    return this.sermonRepository.save(sermon);
+    while ((await this.sermonRepository.count()) > MAX_SERMONS) {
+      const [oldestSermon] = await this.sermonRepository.find({
+        take: 1,
+        order: {
+          createdAt: 'ASC',
+        },
+      });
+
+      if (!oldestSermon) {
+        break;
+      }
+
+      await this.remove(oldestSermon.id);
+    }
+
+    return savedSermon;
   }
 
   async findAll({ page, limit }: PaginationDto) {

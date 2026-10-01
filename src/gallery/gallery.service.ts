@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { unlink } from 'node:fs/promises';
@@ -8,6 +12,8 @@ import { Gallery, GalleryImageType } from './entities/gallery.entity';
 import { CreateGalleryDto } from './dto/create-gallery.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 
+const MAX_GALLERY_IMAGES = 400;
+
 @Injectable()
 export class GalleryService {
   constructor(
@@ -16,6 +22,17 @@ export class GalleryService {
   ) {}
 
   async create(data: CreateGalleryDto, imageUrl: string) {
+    const galleryImageCount = await this.galleryRepository.count();
+
+    if (galleryImageCount >= MAX_GALLERY_IMAGES) {
+      const filename = basename(imageUrl);
+
+      await unlink(`./uploads/gallery/${filename}`).catch(() => {});
+      throw new BadRequestException(
+        `The gallery can contain a maximum of ${MAX_GALLERY_IMAGES} images`,
+      );
+    }
+
     const gallery = this.galleryRepository.create({
       title: data.title,
       description: data.description,

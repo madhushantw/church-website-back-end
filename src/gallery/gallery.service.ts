@@ -12,7 +12,7 @@ import { Gallery, GalleryImageType } from './entities/gallery.entity';
 import { CreateGalleryDto } from './dto/create-gallery.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 
-const MAX_GALLERY_IMAGES = 400;
+const MAX_GALLERY_IMAGES = 600;
 
 @Injectable()
 export class GalleryService {

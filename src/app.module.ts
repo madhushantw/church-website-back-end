@@ -11,6 +11,7 @@ import { ChurchInfoModule } from './church-info/church-info.module';
 import { HeroModule } from './hero/hero.module';
 import { ContactModule } from './contact/contact.module';
 import { MissionPartnersModule } from './mission-partners/mission-partners.module';
+import { TeamMembersModule } from './team-members/team-members.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { MissionPartnersModule } from './mission-partners/mission-partners.modul
     HeroModule,
     ContactModule,
     MissionPartnersModule,
+    TeamMembersModule,
   ],
 })
 export class AppModule {}

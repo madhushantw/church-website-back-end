@@ -30,6 +30,30 @@ export class ChurchInfoSeed {
       facebookUrl: 'https://facebook.com/church',
       youtubeUrl: 'https://youtube.com/church',
       instagramUrl: 'https://instagram.com/church',
+      aboutUsTitle: 'About us',
+      aboutUsSubTitle: 'Welcome to our church',
+      aboutUsImage: null,
+      aboutHeroImage: null,
+      giveHeroImage: null,
+      eventHeroImage: null,
+      galleryHeroImage: null,
+      ministryHeroImage: null,
+      sermonsHeroImage: null,
+      aboutUs:
+        'We are a loving church community serving God and our neighbors.',
+      pastorName: 'Pastor Name',
+      pastorTitle1: 'Senior Pastor',
+      pastorTitle2: 'Community Leader',
+      pastorMessage1:
+        'We believe in prayer, worship, and serving our community.',
+      pastorMessage2: 'Together we can make a difference in the lives of many.',
+      pastorAvatar: '/uploads/church-info/pastor.jpg',
+      video1: 'https://www.youtube.com/watch?v=your-video-1',
+      video2: 'https://www.youtube.com/watch?v=your-video-2',
+      bankAccountName: 'Church Giving Fund',
+      bank: 'First National Bank',
+      accountNumber: '123456789',
+      routingNumber: '021000021',
     });
 
     await this.churchInfoRepository.save(churchInfo);

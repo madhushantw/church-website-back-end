@@ -77,27 +77,52 @@ export class ChurchInfoService {
       order: { createdAt: 'ASC' },
     });
 
+    const updateData = Object.entries(data).reduce(
+      (result, [key, value]) => {
+        if (value === undefined) {
+          return result;
+        }
+
+        if (value === '') {
+          return result;
+        }
+
+        if (value === null) {
+          if (imageFields.includes(key as (typeof imageFields)[number])) {
+            result[key as keyof UpdateChurchInfoDto] = value;
+          }
+
+          return result;
+        }
+
+        result[key as keyof UpdateChurchInfoDto] = value;
+        return result;
+      },
+      {} as Partial<UpdateChurchInfoDto>,
+    );
+
     if (!churchInfo) {
       churchInfo = this.churchInfoRepository.create({
         name: data.name || 'Church Name',
-        ...data,
+        ...updateData,
       });
     } else {
       const record = churchInfo as unknown as Record<
         string,
         string | null | undefined
       >;
-      const dataRecord = data as Record<string, string | null | undefined>;
-      const providedFieldNames = new Set(Object.keys(dataRecord));
 
       for (const field of imageFields) {
-        const hasFieldValue = providedFieldNames.has(field);
-        const nextValue = hasFieldValue ? dataRecord[field] : record[field];
+        const incomingValue = updateData[field];
 
-        await this.removeUploadedImageIfNeeded(record[field], nextValue);
+        if (incomingValue === undefined) {
+          continue;
+        }
+
+        await this.removeUploadedImageIfNeeded(record[field], incomingValue);
       }
 
-      Object.assign(churchInfo, data);
+      Object.assign(churchInfo, updateData);
     }
 
     return this.churchInfoRepository.save(churchInfo);

@@ -3,51 +3,51 @@ import { IsNumber, IsOptional, IsString } from 'class-validator';
 export class UpdateChurchInfoDto {
   @IsString()
   @IsOptional()
-  name?: string;
+  name?: string | null;
 
   @IsString()
   @IsOptional()
-  description?: string;
+  description?: string | null;
 
   @IsString()
   @IsOptional()
-  address?: string;
+  address?: string | null;
 
   @IsString()
   @IsOptional()
-  phone?: string;
+  phone?: string | null;
 
   @IsString()
   @IsOptional()
-  email?: string;
+  email?: string | null;
 
   @IsString()
   @IsOptional()
-  website?: string;
+  website?: string | null;
 
   @IsNumber()
   @IsOptional()
-  foundedYear?: number;
+  foundedYear?: number | null;
 
   @IsString()
   @IsOptional()
-  facebookUrl?: string;
+  facebookUrl?: string | null;
 
   @IsString()
   @IsOptional()
-  youtubeUrl?: string;
+  youtubeUrl?: string | null;
 
   @IsString()
   @IsOptional()
-  instagramUrl?: string;
+  instagramUrl?: string | null;
 
   @IsString()
   @IsOptional()
-  aboutUsTitle?: string;
+  aboutUsTitle?: string | null;
 
   @IsString()
   @IsOptional()
-  aboutUsSubTitle?: string;
+  aboutUsSubTitle?: string | null;
 
   @IsString()
   @IsOptional()
@@ -79,27 +79,27 @@ export class UpdateChurchInfoDto {
 
   @IsString()
   @IsOptional()
-  aboutUs?: string;
+  aboutUs?: string | null;
 
   @IsString()
   @IsOptional()
-  pastorName?: string;
+  pastorName?: string | null;
 
   @IsString()
   @IsOptional()
-  pastorTitle1?: string;
+  pastorTitle1?: string | null;
 
   @IsString()
   @IsOptional()
-  pastorTitle2?: string;
+  pastorTitle2?: string | null;
 
   @IsString()
   @IsOptional()
-  pastorMessage1?: string;
+  pastorMessage1?: string | null;
 
   @IsString()
   @IsOptional()
-  pastorMessage2?: string;
+  pastorMessage2?: string | null;
 
   @IsString()
   @IsOptional()
@@ -107,25 +107,25 @@ export class UpdateChurchInfoDto {
 
   @IsString()
   @IsOptional()
-  video1?: string;
+  video1?: string | null;
 
   @IsString()
   @IsOptional()
-  video2?: string;
+  video2?: string | null;
 
   @IsString()
   @IsOptional()
-  bankAccountName?: string;
+  bankAccountName?: string | null;
 
   @IsString()
   @IsOptional()
-  bank?: string;
+  bank?: string | null;
 
   @IsString()
   @IsOptional()
-  accountNumber?: string;
+  accountNumber?: string | null;
 
   @IsString()
   @IsOptional()
-  routingNumber?: string;
+  routingNumber?: string | null;
 }

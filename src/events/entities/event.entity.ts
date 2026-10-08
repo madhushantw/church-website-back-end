@@ -20,10 +20,10 @@ export class Event {
   @Column({ type: 'text', nullable: true })
   image!: string | null;
 
-  @Column({ type: 'timestamptz' })
+  @Column({ type: 'timestamp' })
   startDate!: Date;
 
-  @Column({ type: 'timestamptz' })
+  @Column({ type: 'timestamp' })
   endDate!: Date;
 
   @Column({ type: 'text', nullable: true })

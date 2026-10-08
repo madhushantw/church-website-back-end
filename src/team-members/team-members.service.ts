@@ -59,31 +59,46 @@ export class TeamMembersService {
 
   async update(id: string, data: UpdateTeamMemberDto) {
     const teamMember = await this.findOne(id);
+    const previousPhoto = teamMember.photo;
 
     Object.assign(teamMember, data);
 
-    return this.teamMemberRepository.save(teamMember);
+    const updatedTeamMember = await this.teamMemberRepository.save(teamMember);
+
+    if (previousPhoto !== updatedTeamMember.photo) {
+      await this.removeUploadedPhoto(previousPhoto);
+    }
+
+    return updatedTeamMember;
   }
 
   async remove(id: string) {
     const teamMember = await this.findOne(id);
 
-    if (teamMember.photo.startsWith(teamMemberUploadUrlPrefix)) {
-      const filename = teamMember.photo.slice(teamMemberUploadUrlPrefix.length);
-
-      if (filename && basename(filename) === filename) {
-        try {
-          await unlink(resolve(teamMemberUploadDirectory, filename));
-        } catch (error) {
-          if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
-            throw error;
-          }
-        }
-      }
-    }
+    await this.removeUploadedPhoto(teamMember.photo);
 
     await this.teamMemberRepository.remove(teamMember);
 
     return { message: 'Team member deleted successfully' };
+  }
+
+  private async removeUploadedPhoto(photo: string) {
+    if (!photo.startsWith(teamMemberUploadUrlPrefix)) {
+      return;
+    }
+
+    const filename = photo.slice(teamMemberUploadUrlPrefix.length);
+
+    if (!filename || basename(filename) !== filename) {
+      return;
+    }
+
+    try {
+      await unlink(resolve(teamMemberUploadDirectory, filename));
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
+        throw error;
+      }
+    }
   }
 }

@@ -24,9 +24,7 @@ export class Hero {
   subtitle!: string;
 
   @Column({
-    type: 'text',
-    array: true,
-    default: '{}',
+    type: 'json',
   })
   images!: string[];
 

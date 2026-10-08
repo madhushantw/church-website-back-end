@@ -18,7 +18,10 @@ export class SermonsService {
   ) {}
 
   async create(data: CreateSermonDto) {
-    const sermon = this.sermonRepository.create(data);
+    const sermon = this.sermonRepository.create({
+      ...data,
+      pdfFiles: data.pdfFiles ?? [],
+    });
     const savedSermon = await this.sermonRepository.save(sermon);
 
     while ((await this.sermonRepository.count()) > MAX_SERMONS) {

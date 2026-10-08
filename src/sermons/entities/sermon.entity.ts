@@ -37,7 +37,7 @@ export class Sermon {
   @Column({ type: 'varchar' })
   sermonDate!: string;
 
-  @Column({ type: 'jsonb', default: () => "'[]'" })
+  @Column({ type: 'json', nullable: false })
   pdfFiles!: SermonPdfFile[];
 
   @CreateDateColumn()

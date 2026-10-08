@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { randomUUID } from 'node:crypto';
-import { mkdirSync } from 'node:fs';
+import { mkdir } from 'node:fs';
 import { extname, join } from 'node:path';
 import { diskStorage } from 'multer';
 import { HeroService } from './hero.service';
@@ -23,8 +23,6 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
 
 const heroUploadDirectory = join(process.cwd(), 'uploads', 'hero');
-
-mkdirSync(heroUploadDirectory, { recursive: true });
 
 @Controller('hero')
 export class HeroController {
@@ -48,7 +46,11 @@ export class HeroController {
   @UseInterceptors(
     FilesInterceptor('images', 10, {
       storage: diskStorage({
-        destination: heroUploadDirectory,
+        destination: (_req, _file, callback) => {
+          mkdir(heroUploadDirectory, { recursive: true }, (error) => {
+            callback(error, heroUploadDirectory);
+          });
+        },
         filename: (_req, file, callback) => {
           callback(null, `${randomUUID()}${extname(file.originalname)}`);
         },

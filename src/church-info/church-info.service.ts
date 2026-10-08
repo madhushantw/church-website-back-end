@@ -77,29 +77,30 @@ export class ChurchInfoService {
       order: { createdAt: 'ASC' },
     });
 
-    const updateData = Object.entries(data).reduce(
-      (result, [key, value]) => {
-        if (value === undefined) {
-          return result;
+    const updateData: Partial<UpdateChurchInfoDto> = {};
+
+    for (const field of Object.keys(data) as Array<keyof UpdateChurchInfoDto>) {
+      const value = data[field];
+
+      if (value === undefined || value === '') {
+        continue;
+      }
+
+      if (value === null) {
+        if (imageFields.includes(field as (typeof imageFields)[number])) {
+          updateData[field] = value;
         }
 
-        if (value === '') {
-          return result;
-        }
+        continue;
+      }
 
-        if (value === null) {
-          if (imageFields.includes(key as (typeof imageFields)[number])) {
-            result[key as keyof UpdateChurchInfoDto] = value;
-          }
+      if (field === 'foundedYear') {
+        updateData[field] = value as number;
+        continue;
+      }
 
-          return result;
-        }
-
-        result[key as keyof UpdateChurchInfoDto] = value;
-        return result;
-      },
-      {} as Partial<UpdateChurchInfoDto>,
-    );
+      updateData[field] = value as string;
+    }
 
     if (!churchInfo) {
       churchInfo = this.churchInfoRepository.create({

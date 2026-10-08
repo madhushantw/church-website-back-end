@@ -23,6 +23,9 @@ export class MissionPartner {
   @Column({ type: 'text' })
   link!: string;
 
+  @Column({ type: 'text', nullable: true })
+  image!: string | null;
+
   @CreateDateColumn()
   createdAt!: Date;
 

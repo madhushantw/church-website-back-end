@@ -1,11 +1,20 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { resolve } from 'node:path';
 import { Repository } from 'typeorm';
 
+import { removeUploadedFile } from '../common/utils/remove-uploaded-file';
 import { MissionPartner } from './entities/mission-partner.entity';
 import { CreateMissionPartnerDto } from './dto/create-mission-partner.dto';
 import { UpdateMissionPartnerDto } from './dto/update-mission-partner.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+
+const missionPartnerUploadDirectory = resolve(
+  process.cwd(),
+  'uploads',
+  'mission-partners',
+);
+const missionPartnerImageUrlPrefix = '/uploads/mission-partners/';
 
 @Injectable()
 export class MissionPartnersService {
@@ -52,16 +61,36 @@ export class MissionPartnersService {
 
   async update(id: string, data: UpdateMissionPartnerDto) {
     const missionPartner = await this.findOne(id);
+    const previousImage = missionPartner.image;
 
     Object.assign(missionPartner, data);
 
-    return this.missionPartnerRepository.save(missionPartner);
+    const updatedMissionPartner =
+      await this.missionPartnerRepository.save(missionPartner);
+
+    if (previousImage && previousImage !== updatedMissionPartner.image) {
+      await removeUploadedFile(
+        previousImage,
+        missionPartnerImageUrlPrefix,
+        missionPartnerUploadDirectory,
+      );
+    }
+
+    return updatedMissionPartner;
   }
 
   async remove(id: string) {
     const missionPartner = await this.findOne(id);
 
     await this.missionPartnerRepository.remove(missionPartner);
+
+    if (missionPartner.image) {
+      await removeUploadedFile(
+        missionPartner.image,
+        missionPartnerImageUrlPrefix,
+        missionPartnerUploadDirectory,
+      );
+    }
 
     return {
       message: 'Mission partner deleted successfully',

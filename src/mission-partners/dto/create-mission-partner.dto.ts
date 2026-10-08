@@ -16,4 +16,8 @@ export class CreateMissionPartnerDto {
   @IsString()
   @IsNotEmpty()
   link!: string;
+
+  @IsString()
+  @IsOptional()
+  image?: string;
 }

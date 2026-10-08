@@ -1,11 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { resolve } from 'node:path';
 import { Repository } from 'typeorm';
 
+import { removeUploadedFile } from '../common/utils/remove-uploaded-file';
 import { Event } from './entities/event.entity';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+
+const eventUploadDirectory = resolve(process.cwd(), 'uploads', 'events');
+const eventImageUrlPrefix = '/uploads/events/';
 
 @Injectable()
 export class EventsService {
@@ -56,6 +61,7 @@ export class EventsService {
 
   async update(id: string, data: UpdateEventDto) {
     const event = await this.findOne(id);
+    const previousImage = event.image;
 
     Object.assign(event, {
       ...data,
@@ -67,13 +73,31 @@ export class EventsService {
       }),
     });
 
-    return this.eventRepository.save(event);
+    const updatedEvent = await this.eventRepository.save(event);
+
+    if (previousImage && previousImage !== updatedEvent.image) {
+      await removeUploadedFile(
+        previousImage,
+        eventImageUrlPrefix,
+        eventUploadDirectory,
+      );
+    }
+
+    return updatedEvent;
   }
 
   async remove(id: string) {
     const event = await this.findOne(id);
 
     await this.eventRepository.remove(event);
+
+    if (event.image) {
+      await removeUploadedFile(
+        event.image,
+        eventImageUrlPrefix,
+        eventUploadDirectory,
+      );
+    }
 
     return {
       message: 'Event deleted successfully',

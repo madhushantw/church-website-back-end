@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { unlink } from 'node:fs/promises';
 import { basename, resolve } from 'node:path';
@@ -31,7 +35,10 @@ export class TeamMembersService {
 
   async findAll({ page, limit }: PaginationDto) {
     const [items, total] = await this.teamMemberRepository.findAndCount({
-      order: { name: 'ASC' },
+      order: {
+        orderIndex: 'ASC',
+        createdAt: 'ASC',
+      },
       skip: (page - 1) * limit,
       take: limit,
     });
@@ -100,5 +107,28 @@ export class TeamMembersService {
         throw error;
       }
     }
+  }
+
+  async reorder(ids: string[]) {
+    console.log(ids);
+    return this.teamMemberRepository.manager.transaction(async (manager) => {
+      const repository = manager.getRepository(TeamMember);
+
+      const members = await repository.findBy(ids.map((id) => ({ id })));
+
+      if (members.length !== ids.length) {
+        throw new BadRequestException(
+          'One or more team members were not found',
+        );
+      }
+
+      for (const [index, id] of ids.entries()) {
+        await repository.update(id, { orderIndex: index });
+      }
+
+      return {
+        message: 'Team members reordered successfully',
+      };
+    });
   }
 }

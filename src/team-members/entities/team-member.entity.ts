@@ -28,4 +28,7 @@ export class TeamMember {
 
   @UpdateDateColumn()
   updatedAt!: Date;
+
+  @Column({ type: 'int', default: 0 })
+  orderIndex!: number;
 }

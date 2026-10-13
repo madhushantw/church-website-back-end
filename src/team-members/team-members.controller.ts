@@ -26,6 +26,7 @@ import { UserRole } from '../users/entities/user.entity';
 import { CreateTeamMemberDto } from './dto/create-team-member.dto';
 import { UpdateTeamMemberDto } from './dto/update-team-member.dto';
 import { TeamMembersService } from './team-members.service';
+import { ReorderTeamMembersDto } from './dto/reorder-team-members.dto';
 
 const teamMemberUploadDirectory = './uploads/team-members';
 
@@ -38,6 +39,13 @@ export class TeamMembersController {
   @Get()
   findAll(@Query() pagination: PaginationDto) {
     return this.teamMembersService.findAll(pagination);
+  }
+
+  @Patch('reorder')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.ROOT)
+  reorder(@Body() data: ReorderTeamMembersDto) {
+    return this.teamMembersService.reorder(data.ids);
   }
 
   @Get(':id')

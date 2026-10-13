@@ -27,20 +27,7 @@ export class ContactService {
     });
   }
 
-  async verifyMailConnection(): Promise<void> {
-    try {
-      await this.mailer.verify();
-      this.logger.log('SMTP connection and authentication verified.');
-    } catch (error: unknown) {
-      this.logger.error(
-        'SMTP verification failed.',
-        error instanceof Error ? error.stack : String(error),
-      );
-    }
-  }
-
   private async sendMail(contact: Contact): Promise<void> {
-    void this.verifyMailConnection();
     try {
       const notificationEmail = process.env.CONTACT_NOTIFICATION_EMAIL;
 

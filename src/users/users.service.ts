@@ -20,17 +20,19 @@ export class UsersService {
 
     const user = this.userRepository.create({
       ...data,
+      role: data.role ?? UserRole.USER,
       password: hashedPassword,
     });
 
     return this.userRepository.save(user);
   }
 
-  async findAll({ page, limit }: PaginationDto) {
+  async findAll({ page, limit }: PaginationDto, role: UserRole) {
     const [items, total] = await this.userRepository.findAndCount({
-      where: {
-        role: Not(UserRole.ROOT),
-      },
+      where:
+        role === UserRole.ADMIN
+          ? { role: UserRole.USER }
+          : { role: Not(UserRole.ROOT) },
       skip: (page - 1) * limit,
       take: limit,
     });

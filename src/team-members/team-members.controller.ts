@@ -43,7 +43,7 @@ export class TeamMembersController {
 
   @Patch('reorder')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ROOT)
+  @Roles(UserRole.ROOT, UserRole.ADMIN)
   reorder(@Body() data: ReorderTeamMembersDto) {
     return this.teamMembersService.reorder(data.ids);
   }
@@ -55,7 +55,7 @@ export class TeamMembersController {
 
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ROOT)
+  @Roles(UserRole.ROOT, UserRole.ADMIN)
   @UseInterceptors(
     FileInterceptor('photo', {
       storage: diskStorage({
@@ -92,7 +92,7 @@ export class TeamMembersController {
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ROOT)
+  @Roles(UserRole.ROOT, UserRole.ADMIN)
   @UseInterceptors(
     FileInterceptor('photo', {
       storage: diskStorage({
@@ -128,7 +128,7 @@ export class TeamMembersController {
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ROOT)
+  @Roles(UserRole.ROOT, UserRole.ADMIN)
   remove(@Param('id') id: string) {
     return this.teamMembersService.remove(id);
   }

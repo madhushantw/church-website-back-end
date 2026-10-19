@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import {
   Column,
   CreateDateColumn,
@@ -8,6 +9,7 @@ import {
 
 export enum UserRole {
   ROOT = 'ROOT',
+  ADMIN = 'ADMIN',
   USER = 'USER',
 }
 
@@ -22,7 +24,7 @@ export class User {
   @Column({ unique: true })
   email!: string;
 
-  @Column()
+  @Column({ select: false })
   password!: string;
 
   @Column({

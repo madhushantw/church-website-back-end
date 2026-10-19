@@ -35,14 +35,14 @@ export class HeroController {
 
   @Patch()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ROOT)
+  @Roles(UserRole.ROOT, UserRole.ADMIN)
   update(@Body() data: UpdateHeroDto) {
     return this.heroService.update(data);
   }
 
   @Post('images')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ROOT)
+  @Roles(UserRole.ROOT, UserRole.ADMIN)
   @UseInterceptors(
     FilesInterceptor('images', 10, {
       storage: diskStorage({
@@ -80,7 +80,7 @@ export class HeroController {
 
   @Delete('images')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ROOT)
+  @Roles(UserRole.ROOT, UserRole.ADMIN)
   removeImage(@Body('imageUrl') imageUrl: string) {
     if (!imageUrl) {
       throw new BadRequestException('Image URL is required');

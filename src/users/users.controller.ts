@@ -8,6 +8,7 @@ import {
   Post,
   Query,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 
 import { UsersService } from './users.service';
@@ -21,7 +22,7 @@ import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles(UserRole.ROOT)
+@Roles(UserRole.ROOT, UserRole.ADMIN)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
   @Post()
@@ -30,8 +31,11 @@ export class UsersController {
   }
 
   @Get()
-  findAll(@Query() pagination: PaginationDto) {
-    return this.usersService.findAll(pagination);
+  findAll(
+    @Query() pagination: PaginationDto,
+    @Req() req: Request & { user: { role: UserRole } },
+  ) {
+    return this.usersService.findAll(pagination, req.user.role);
   }
 
   @Get(':id')

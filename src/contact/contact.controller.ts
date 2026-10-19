@@ -27,14 +27,14 @@ export class ContactController {
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ROOT)
+  @Roles(UserRole.ROOT, UserRole.ADMIN)
   @Get()
   findAll(@Query() pagination: PaginationDto) {
     return this.contactService.findAll(pagination);
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ROOT)
+  @Roles(UserRole.ROOT, UserRole.ADMIN)
   @Patch(':id/read')
   markAsRead(@Param('id') id: string) {
     return this.contactService.markAsRead(id);

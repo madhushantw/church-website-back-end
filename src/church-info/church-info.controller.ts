@@ -37,7 +37,7 @@ export class ChurchInfoController {
 
   @Patch()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(UserRole.ROOT)
+  @Roles(UserRole.ROOT, UserRole.ADMIN)
   @UseInterceptors(
     AnyFilesInterceptor({
       storage: diskStorage({

@@ -8,13 +8,15 @@ import { AuthService } from './auth.service';
 import { User } from '../users/entities/user.entity';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { RolesGuard } from './guards/roles.guard';
+import { MailModule } from 'src/mail/mail.module';
+import { PasswordResetOtp } from './entities/password-reset-otp.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User]),
-
+    TypeOrmModule.forFeature([User, PasswordResetOtp]),
+    MailModule,
     JwtModule.registerAsync({
-      imports: [ConfigModule],
+      imports: [ConfigModule, MailModule],
       inject: [ConfigService],
 
       useFactory: (configService: ConfigService) => ({
@@ -28,7 +30,6 @@ import { RolesGuard } from './guards/roles.guard';
 
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy, RolesGuard],
-
   exports: [AuthService],
 })
 export class AuthModule {}

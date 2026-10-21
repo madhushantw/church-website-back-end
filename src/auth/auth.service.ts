@@ -50,11 +50,11 @@ export class AuthService {
   }
 
   async login(data: LoginDto) {
-    const user = await this.userRepository.findOne({
-      where: {
-        email: this.normalizeEmail(data.email),
-      },
-    });
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .addSelect('user.password')
+      .where('user.email = :email', { email: this.normalizeEmail(data.email) })
+      .getOne();
 
     if (!user) {
       throw new UnauthorizedException('Invalid email or password');
@@ -124,7 +124,6 @@ export class AuthService {
       where: { email },
     });
 
-    // Do not reveal whether the email exists.
     if (!user) {
       return genericResponse;
     }
@@ -149,10 +148,8 @@ export class AuthService {
     const savedOtp = await this.otpRepository.save(resetOtp);
 
     try {
-      // Implement this method in your existing MailService.
       await this.mailService.sendPasswordResetOtp(email, otp);
     } catch {
-      // Invalidate the OTP if email delivery fails.
       savedOtp.usedAt = new Date();
       await this.otpRepository.save(savedOtp);
 
